@@ -63,6 +63,16 @@ def main():
     try:
         results = parser.parse_queries(queries, region=region, max_results=10)
         
+        # Сохраняем в базу данных
+        from src.storage.database import Database
+        db = Database(settings)
+        session_id = db.create_session(region=region, search_engine='yandex')
+        
+        for query_result in results:
+            db.save_results(session_id, query_result['query'], query_result['results'])
+        
+        print(f"💾 Данные сохранены в базу (сессия #{session_id})")
+        
         print(f"\n3. Результаты парсинга:")
         print("=" * 50)
         
