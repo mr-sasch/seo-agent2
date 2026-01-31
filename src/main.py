@@ -105,3 +105,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
+from src.reporting.html_builder import HTMLBuilder
+reporter = HTMLBuilder(settings)
+report_path = reporter.generate_report(days_back=2)
+print(f"📄 HTML отчет создан: {report_path}")

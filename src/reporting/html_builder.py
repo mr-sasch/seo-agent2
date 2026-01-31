@@ -1,29 +1,582 @@
+# src/reporting/html_builder.py
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import List, Dict
+import logging
+from src.storage.database import Database
+
 class HTMLBuilder:
+    """Генератор HTML отчетов в формате таблицы."""
+    
     def __init__(self, settings):
         self.settings = settings
-        print(f"[Reporter] Reports will go to: {self.settings.REPORTS_DIR}")
+        self.logger = logging.getLogger(__name__)
     
-    def generate_daily_report(self, session_id):
-        print(f"[Reporter] Generating HTML report for session: {session_id}")
-        # TODO: Реальная генерация HTML таблицы
-        import datetime
-        report_file = self.settings.REPORTS_DIR / f"report_{session_id}.html"
-        
-        html_content = f"""
-        <html>
-        <head><title>SEO Report {session_id}</title></head>
-        <body>
-            <h1>SEO Report</h1>
-            <p>Session: {session_id}</p>
-            <p>Generated: {datetime.datetime.now()}</p>
-            <table border="1">
-                <tr><th>Query</th><th>Position</th><th>URL</th></tr>
-                <tr><td colspan="3">Report will be here</td></tr>
-            </table>
-        </body>
-        </html>
+    def generate_report(self, days_back: int = 2) -> str:
         """
+        Генерирует HTML отчет за последние N дней.
         
-        report_file.write_text(html_content)
-        print(f"[Reporter] Report saved to: {report_file}")
-        return str(report_file)
+        Args:
+            days_back: количество дней для отчета
+            
+        Returns:
+            Путь к созданному HTML файлу
+        """
+        self.logger.info(f"Генерация отчета за последние {days_back} дней")
+        
+        # Получаем данные из базы
+        db = Database(self.settings)
+        
+        # Получаем последние сессии
+        sessions = self._get_last_sessions(db, days_back)
+        if not sessions:
+            self.logger.warning("Нет данных для отчета")
+            return None
+        
+        # Получаем все запросы
+        queries = self._get_all_queries(db)
+        
+        # Формируем данные для таблицы
+        table_data = self._prepare_table_data(db, sessions, queries)
+        
+        # Генерируем HTML
+        html_content = self._build_html(sessions, queries, table_data)
+        
+        # Сохраняем файл
+        report_path = self._save_html(html_content)
+        
+        return report_path
+    
+    def _get_last_sessions(self, db: 'Database', days_back: int) -> List[Dict]:
+        """Получает последние N сессий за указанное количество дней."""
+        all_sessions = db.get_last_sessions(limit=50)  # Берем с запасом
+        cutoff_date = datetime.now() - timedelta(days=days_back)
+        
+        recent_sessions = []
+        for session in all_sessions:
+            session_date = datetime.strptime(session['created_at'], '%Y-%m-%d %H:%M:%S.%f')
+            if session_date >= cutoff_date:
+                recent_sessions.append(session)
+        
+        # Берем максимум по одной сессии в день
+        daily_sessions = {}
+        for session in recent_sessions:
+            session_date = session['created_at'].split()[0]
+            if session_date not in daily_sessions:
+                daily_sessions[session_date] = session
+        
+        # Сортируем по дате
+        sorted_sessions = sorted(
+            daily_sessions.values(),
+            key=lambda x: x['created_at'],
+            reverse=True
+        )
+        
+        return sorted_sessions[:days_back]
+    
+    def _get_all_queries(self, db: 'Database') -> List[str]:
+        """Получает все уникальные запросы из базы."""
+        # В простой реализации - читаем из файла queries.txt
+        queries_file = Path(__file__).parent.parent.parent / 'config' / 'queries.txt'
+        with open(queries_file, 'r', encoding='utf-8') as f:
+            queries = [line.strip() for line in f if line.strip()]
+        
+        return queries
+    
+    def _prepare_table_data(self, db: 'Database', sessions: List[Dict], queries: List[str]) -> Dict:
+        """Подготавливает данные для таблицы."""
+        table_data = {}
+        
+        for query in queries:
+            table_data[query] = {}
+            
+            for session in sessions:
+                session_id = session['id']
+                date_key = session['created_at'].split()[0]  # Только дата
+                
+                # Получаем результаты для этого запроса и сессии
+                all_results = db.get_session_results(session_id)
+                query_results = [r for r in all_results if r['query'] == query]
+                
+                # Ограничиваем 10 результатами
+                table_data[query][date_key] = query_results[:10]
+        
+        return table_data
+    
+    def _build_html(self, sessions: List[Dict], queries: List[str], table_data: Dict) -> str:
+        """Создает HTML контент на основе вашего шаблона."""
+        
+        # Подготавливаем даты для заголовков
+        date_headers = [session['created_at'].split()[0] for session in sessions]
+        
+        # Подготавливаем статистику
+        stats = {
+            'keywords_count': len(queries),
+            'days_count': len(sessions),
+            'domains_in_top10': 0,  # Можно вычислить если есть целевой домен
+        }
+        
+        # Генерируем строки таблицы
+        table_rows = ""
+        for i, query in enumerate(queries):
+            # Уникальные домены для этого запроса
+            all_domains = set()
+            for date_results in table_data[query].values():
+                for result in date_results:
+                    all_domains.add(result.get('domain', ''))
+            
+            row_class = "even" if i % 2 == 0 else "odd"
+            
+            # Начинаем строку
+            table_rows += f"""
+                    <tr class="{row_class}">
+                        <td class="keyword-cell">
+                            <div style="font-weight: 500;">{query}</div>
+                            <div style="font-size: 11px; color: #6c757d; margin-top: 4px;">
+                                Последняя проверка: {datetime.now().strftime('%Y-%m-%d')}<br>
+                                Уникальных доменов: {len(all_domains)}
+                            </div>
+                        </td>"""
+            
+            # Добавляем ячейки с данными для каждой даты
+            for date_key in date_headers:
+                results = table_data[query].get(date_key, [])
+                
+                table_rows += f"""
+                        <td>
+                            <div class="competitor-list">"""
+                
+                if results:
+                    for result in results:
+                        position = result['position']
+                        domain = result.get('domain', '')
+                        url = result.get('url', '')
+                        title = result.get('title', '')[:100] + "..." if len(result.get('title', '')) > 100 else result.get('title', '')
+                        short_url = (url[:60] + "...") if len(url) > 60 else url
+                        
+                        position_class = ""
+                        if position == 1:
+                            position_class = "position-1"
+                        elif position == 2:
+                            position_class = "position-2"
+                        elif position == 3:
+                            position_class = "position-3"
+                        
+                        table_rows += f"""
+                                <div class="competitor-item {position_class}">
+                                    <span class="position-badge">{position}</span>
+                                    <span style="font-weight: 500;">{domain}</span>
+                                    <a href="{url}" target="_blank" class="competitor-url" title="{url}">
+                                        {short_url}
+                                    </a>"""
+                        
+                        if title:
+                            table_rows += f"""
+                                    <span class="competitor-title" title="{title}">{title}</span>"""
+                        
+                        table_rows += """
+                                </div>"""
+                else:
+                    table_rows += """
+                                <div class="empty-cell">Нет данных</div>"""
+                
+                table_rows += """
+                            </div>
+                        </td>"""
+            
+            table_rows += """
+                    </tr>"""
+        
+        # Собираем полный HTML
+        html_template = self._get_html_template()
+        html_content = html_template.format(
+            report_date=datetime.now().strftime('%d.%m.%Y %H:%M'),
+            days_count=stats['days_count'],
+            keywords_count=stats['keywords_count'],
+            date_headers="\n                        ".join(
+                [f'<th class="date-header">{date}</th>' for date in date_headers]
+            ),
+            table_rows=table_rows
+        )
+        
+        return html_content
+    
+    def _get_html_template(self) -> str:
+        """Возвращает шаблон HTML (ваш статический шаблон с заменяемыми полями)."""
+        return """<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Мониторинг конкурентов</title>
+    <style>
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }}
+        
+        body {{
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }}
+        
+        .container {{
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }}
+        
+        .header {{
+            background: linear-gradient(135deg, #2c3e50, #4a6491);
+            color: white;
+            padding: 25px 30px;
+            border-bottom: 4px solid #3498db;
+        }}
+        
+        .header h1 {{
+            font-size: 28px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }}
+        
+        .header .subtitle {{
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }}
+        
+        .header .meta {{
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }}
+        
+        .stats {{
+            background: #f8f9fa;
+            padding: 20px 30px;
+            border-bottom: 1px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }}
+        
+        .stat-item {{
+            text-align: center;
+            min-width: 120px;
+        }}
+        
+        .stat-value {{
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }}
+        
+        .stat-label {{
+            font-size: 13px;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }}
+        
+        .table-container {{
+            padding: 20px 30px;
+            overflow-x: auto;
+        }}
+        
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }}
+        
+        thead {{
+            background: #f1f3f4;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }}
+        
+        th {{
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }}
+        
+        td {{
+            padding: 12px;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 13px;
+            vertical-align: top;
+        }}
+        
+        tbody tr:hover {{
+            background-color: #f8f9fa;
+            transition: background-color 0.2s;
+        }}
+        
+        .keyword-cell {{
+            font-weight: 500;
+            color: #2c3e50;
+            white-space: nowrap;
+            min-width: 180px;
+            position: sticky;
+            left: 0;
+            background: white;
+            border-right: 1px solid #e9ecef;
+        }}
+        
+        .date-header {{
+            white-space: nowrap;
+            min-width: 120px;
+            text-align: center;
+        }}
+        
+        .competitor-list {{
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }}
+        
+        .competitor-item {{
+            margin-bottom: 8px;
+            padding: 6px 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            border-left: 3px solid #3498db;
+        }}
+        
+        .competitor-item:hover {{
+            background: #e9ecef;
+        }}
+        
+        .position-badge {{
+            display: inline-block;
+            min-width: 24px;
+            padding: 2px 6px;
+            background: #6c757d;
+            color: white;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            margin-right: 8px;
+        }}
+        
+        .position-1 .position-badge {{
+            background: #28a745;
+        }}
+        
+        .position-2 .position-badge {{
+            background: #20c997;
+        }}
+        
+        .position-3 .position-badge {{
+            background: #17a2b8;
+        }}
+        
+        .competitor-url {{
+            display: block;
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 12px;
+            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }}
+        
+        .competitor-url:hover {{
+            text-decoration: underline;
+            color: #0056b3;
+        }}
+        
+        .competitor-title {{
+            display: block;
+            color: #495057;
+            font-size: 12px;
+            margin-top: 2px;
+            font-style: italic;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            max-height: 32px;
+        }}
+        
+        .empty-cell {{
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }}
+        
+        .footer {{
+            padding: 20px 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 13px;
+            border-top: 1px solid #e9ecef;
+            background: #f8f9fa;
+        }}
+        
+        .legend {{
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }}
+        
+        .legend-item {{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+        }}
+        
+        .legend-color {{
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }}
+        
+        @media (max-width: 768px) {{
+            .container {{
+                border-radius: 0;
+            }}
+            
+            .header, .stats, .table-container, .footer {{
+                padding: 15px;
+            }}
+            
+            .stats {{
+                flex-direction: column;
+                align-items: flex-start;
+            }}
+            
+            .stat-item {{
+                min-width: auto;
+                text-align: left;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏆 SEO Мониторинг конкурентов</h1>
+            <div class="subtitle">Мониторинг позиций в поисковой выдаче</div>
+            <div class="meta">
+                <div>📅 Дата отчета: {report_date}</div>
+                <div>📊 Период: {days_count} дней</div>
+                <div>🔑 Ключевых слов: {keywords_count}</div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value">{keywords_count}</div>
+                <div class="stat-label">Ключевых слов</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{keywords_count}</div>
+                <div class="stat-label">С данными</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">{days_count}</div>
+                <div class="stat-label">Дней отслеживания</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">0</div>
+                <div class="stat-label">Наш домен в топ-10</div>
+            </div>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="keyword-cell">Ключевое слово</th>
+                        {date_headers}
+                    </tr>
+                </thead>
+                <tbody>
+                    {table_rows}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <div>Отчет сгенерирован SEO-агентом • {report_date}</div>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #28a745;"></div>
+                    <span>1-я позиция</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #20c997;"></div>
+                    <span>2-я позиция</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #17a2b8;"></div>
+                    <span>3-я позиция</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #6c757d;"></div>
+                    <span>4-10 позиции</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Скрипт для улучшения взаимодействия
+        document.addEventListener('DOMContentLoaded', function() {{
+            // Прокрутка внутри ячеек
+            const competitorLists = document.querySelectorAll('.competitor-list');
+            competitorLists.forEach(list => {{
+                list.addEventListener('wheel', function(e) {{
+                    if (e.deltaY !== 0) {{
+                        this.scrollTop += e.deltaY;
+                        e.preventDefault();
+                    }}
+                }});
+            }});
+            
+            // Подсветка при наведении на конкурента
+            document.querySelectorAll('.competitor-item').forEach(item => {{
+                item.addEventListener('mouseenter', function() {{
+                    const position = this.querySelector('.position-badge').textContent;
+                    // Можно добавить дополнительную логику здесь
+                }});
+            }});
+        }});
+    </script>
+</body>
+</html>"""
+    
+    def _save_html(self, html_content: str) -> str:
+        """Сохраняет HTML контент в файл."""
+        report_filename = f"seo_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+        report_path = self.settings.REPORTS_DIR / report_filename
+        
+        with open(report_path, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        self.logger.info(f"HTML отчет сохранен: {report_path}")
+        return str(report_path)
