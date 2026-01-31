@@ -39,21 +39,21 @@ def main():
     
     print("✅ Подключение успешно")
     
-    # Тестовые запросы (минимум для проверки)
-    test_queries = [
-        "водомат",
-        "вендинговые аппараты купить",
-        "водоматы питьевой воды купить",
-        "источник здоровья минск",
-        # "ноутбук Dell",  # Пока один запрос для теста
-        # "доставка еды Москва"
-    ]
+    def load_queries():
+        """Загружает запросы из файла."""
+        from pathlib import Path
+        queries_file = Path(__file__).parent.parent / 'config' / 'queries.txt'
+        with open(queries_file, 'r', encoding='utf-8') as f:
+            return [line.strip() for line in f if line.strip()]
     
-    print(f"\n2. Парсим {len(test_queries)} запросов...")
+    # Загружаем запросы
+    queries = load_queries()
+    
+    print(f"\n2. Парсим {len(queries)} запросов...")
     print("   (регион: Москва, результаты: топ-10)")
     
     try:
-        results = parser.parse_queries(test_queries, region=213, max_results=10)
+        results = parser.parse_queries(queries, region=213, max_results=10)
         
         print(f"\n3. Результаты парсинга:")
         print("=" * 50)
