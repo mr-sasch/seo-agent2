@@ -2,7 +2,7 @@
   {
     "query": "водомат",
     "region": 157,
-    "parsed_at": "2026-01-31 15:20:40",
+    "parsed_at": "2026-01-31 15:46:00",
     "results": [
       {
         "position": 1,
@@ -41,10 +41,10 @@
       },
       {
         "position": 6,
-        "url": "https://alivewater.by/",
-        "title": "Главная — Живая вода",
+        "url": "https://alivewater.by/katalog",
+        "title": "Вендинговые аппараты по продаже питьевой воды на улице...",
         "domain": "alivewater.by",
-        "description": "Узнал про"
+        "description": "Сертификаты. 2021-02-146549. «Живая вода» продолжает усовершенствование своих"
       },
       {
         "position": 7,
@@ -80,11 +80,11 @@
   {
     "query": "вендинговые аппараты купить",
     "region": 157,
-    "parsed_at": "2026-01-31 15:20:43",
+    "parsed_at": "2026-01-31 15:46:04",
     "results": [
       {
         "position": 1,
-        "url": "https://www.kufar.by/l/attrakciony-vendingovye-avtomaty",
+        "url": "https://www.kufar.by/l/r~minsk/attrakciony-vendingovye-avtomaty",
         "title": "Аттракционы, ",
         "domain": "www.kufar.by",
         "description": "Аттракционы,"
@@ -98,31 +98,31 @@
       },
       {
         "position": 3,
-        "url": "https://mirespresso.by/catalog/vending/torgovye-avtomaty/",
-        "title": "",
-        "domain": "mirespresso.by",
-        "description": ""
-      },
-      {
-        "position": 4,
-        "url": "https://tlid.by/vending",
-        "title": "",
-        "domain": "tlid.by",
-        "description": "Компания ТЛИД занимается"
-      },
-      {
-        "position": 5,
         "url": "https://pelican.by/catalog/vending/",
         "title": "",
         "domain": "pelican.by",
         "description": "В данном Каталоге можно"
       },
       {
-        "position": 6,
+        "position": 4,
+        "url": "https://mirespresso.by/catalog/vending/torgovye-avtomaty/",
+        "title": "",
+        "domain": "mirespresso.by",
+        "description": ""
+      },
+      {
+        "position": 5,
         "url": "https://aliexpress.ru/popular/vending-machine-for-sale",
         "title": "Vending machine for sale - ",
         "domain": "aliexpress.ru",
         "description": "Vending machine for sale -"
+      },
+      {
+        "position": 6,
+        "url": "https://tlid.by/vending/torgovye-avtomaty",
+        "title": "",
+        "domain": "tlid.by",
+        "description": ""
       },
       {
         "position": 7,
@@ -150,7 +150,7 @@
         "url": "https://russian.alibaba.com/Popular/CN_wall-vending-machine-Trade.html",
         "title": "настенный ",
         "domain": "russian.alibaba.com",
-        "description": "Миниатюрные настенные"
+        "description": "Небольшой"
       }
     ],
     "results_count": 10
@@ -158,7 +158,7 @@
   {
     "query": "водоматы питьевой воды купить",
     "region": 157,
-    "parsed_at": "2026-01-31 15:20:47",
+    "parsed_at": "2026-01-31 15:46:07",
     "results": [
       {
         "position": 1,
@@ -200,7 +200,7 @@
         "url": "https://alivewater.ru/katalog/apparat-dlya-prodazhi-vody-zhivaya-voda-onlajn-2024-god",
         "title": "",
         "domain": "alivewater.ru",
-        "description": "Аппарат для"
+        "description": ""
       },
       {
         "position": 7,
@@ -214,21 +214,21 @@
         "url": "https://ru.made-in-china.com/tag_search_product/Drinking-Water-Vending-Machines_yyonhsin_1.html",
         "title": "Китай автоматы с ",
         "domain": "ru.made-in-china.com",
-        "description": "Автомат для"
+        "description": "Автоматы с"
       },
       {
         "position": 9,
-        "url": "https://aquamat.ru/catalog/",
-        "title": "Автоматы по ",
-        "domain": "aquamat.ru",
-        "description": "Каталог производимых аппаратов по"
-      },
-      {
-        "position": 10,
         "url": "https://www.watervend.ru/katalog/",
         "title": "Каталог автоматов по ",
         "domain": "www.watervend.ru",
         "description": "Каждый из них решает проблему по-своему – кто-то"
+      },
+      {
+        "position": 10,
+        "url": "https://aquamat.ru/catalog/",
+        "title": "Автоматы по ",
+        "domain": "aquamat.ru",
+        "description": "Каталог производимых аппаратов по"
       }
     ],
     "results_count": 10
@@ -236,7 +236,7 @@
   {
     "query": "источник здоровья минск",
     "region": 157,
-    "parsed_at": "2026-01-31 15:20:50",
+    "parsed_at": "2026-01-31 15:46:12",
     "results": [
       {
         "position": 1,

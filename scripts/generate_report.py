@@ -18,7 +18,7 @@ def main():
     reporter = HTMLBuilder(settings)
     
     # Генерируем отчет за 2 последних дня
-    report_path = reporter.generate_report(days_back=2)
+    report_path = reporter.generate_report(days_back=0)
     
     if report_path:
         print(f"✅ Отчет успешно создан:")

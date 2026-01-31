@@ -48,31 +48,29 @@ class HTMLBuilder:
         return report_path
     
     def _get_last_sessions(self, db: 'Database', days_back: int) -> List[Dict]:
-        """Получает последние N сессий за указанное количество дней."""
-        all_sessions = db.get_last_sessions(limit=50)  # Берем с запасом
-        cutoff_date = datetime.now() - timedelta(days=days_back)
+        """Получает последние сессии за указанное количество дней."""
+        # Берем все сессии (или большой лимит)
+        all_sessions = db.get_last_sessions(limit=100)
         
-        recent_sessions = []
-        for session in all_sessions:
-            session_date = datetime.strptime(session['created_at'], '%Y-%m-%d %H:%M:%S.%f')
-            if session_date >= cutoff_date:
-                recent_sessions.append(session)
-        
-        # Берем максимум по одной сессии в день
-        daily_sessions = {}
-        for session in recent_sessions:
-            session_date = session['created_at'].split()[0]
-            if session_date not in daily_sessions:
-                daily_sessions[session_date] = session
-        
-        # Сортируем по дате
+        # Сортируем от новых к старым
         sorted_sessions = sorted(
-            daily_sessions.values(),
+            all_sessions,
             key=lambda x: x['created_at'],
             reverse=True
         )
         
-        return sorted_sessions[:days_back]
+        # Если нужны сессии за последние N дней
+        if days_back > 0:
+            cutoff_date = datetime.now() - timedelta(days=days_back)
+            recent_sessions = []
+            for session in sorted_sessions:
+                session_date = datetime.strptime(session['created_at'], '%Y-%m-%d %H:%M:%S.%f')
+                if session_date >= cutoff_date:
+                    recent_sessions.append(session)
+            return recent_sessions
+        
+        # Или все сессии
+        return sorted_sessions
     
     def _get_all_queries(self, db: 'Database') -> List[str]:
         """Получает все уникальные запросы из базы."""
@@ -92,7 +90,7 @@ class HTMLBuilder:
             
             for session in sessions:
                 session_id = session['id']
-                date_key = session['created_at'].split()[0]  # Только дата
+                date_key = session['created_at']  # Полная дата-время (с миллисекундами)
                 
                 # Получаем результаты для этого запроса и сессии
                 all_results = db.get_session_results(session_id)
@@ -147,7 +145,7 @@ class HTMLBuilder:
             # Добавляем ячейки с данными для каждой даты
             for session, date_header in zip(sessions, date_headers):
                 # Берем оригинальную дату из сессии (без времени) для поиска в table_data
-                date_key = session['created_at'].split()[0]
+                date_key = session['created_at']
                 results = table_data[query].get(date_key, [])
                 
                 table_rows += f"""
