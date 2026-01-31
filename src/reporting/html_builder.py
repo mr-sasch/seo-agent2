@@ -175,10 +175,15 @@ class HTMLBuilder:
                         elif position == 3:
                             position_class = "position-3"
                         
+                        # Определяем CSS класс для подсветки целевого домена
+                        target_domain_class = ""
+                        if domain and 'aquamoney.by' in domain.lower():
+                            target_domain_class = "target-domain"
+                        
                         table_rows += f"""
                                 <div class="competitor-item {position_class}">
                                     <span class="position-badge">{position}</span>
-                                    <span style="font-weight: 500;">{domain}</span>
+                                    <span style="font-weight: 500;" class="{target_domain_class}">{domain}</span>
                                     <a href="{url}" target="_blank" class="competitor-url" title="{url}">
                                         {short_url}
                                     </a>"""
@@ -223,7 +228,7 @@ class HTMLBuilder:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEO Мониторинг конкурентов</title>
-    <link rel="stylesheet" href="../reports/style.css">
+    <link rel="stylesheet" href="../src/reporting/style.css">
 </head>
 <body>
     <div class="container">
