@@ -124,7 +124,7 @@ class YandexParser:
                     'url': self._get_element_text(doc, 'url'),
                     'title': self._get_element_text(doc, 'title'),
                     'domain': self._get_element_text(doc, 'domain'),
-                    'headline': self._get_element_text(doc, 'headline')
+                    'description': self._get_description(doc)
                 }
                 
                 # Очищаем URL от лишнего
@@ -143,6 +143,27 @@ class YandexParser:
         """Безопасное извлечение текста из XML элемента."""
         elem = element.find(tag_name)
         return elem.text if elem is not None and elem.text else default
+    
+    def _get_description(self, doc):
+        """Извлекает описание из passages или headline."""
+        # Сначала пытаемся получить passages
+        passages = doc.find('passages')
+        if passages is not None:
+            first_passage = passages.find('passage')
+            if first_passage is not None and first_passage.text:
+                return first_passage.text.strip()
+        
+        # Если нет passages, берем headline
+        headline = doc.find('headline')
+        if headline is not None and headline.text:
+            return headline.text.strip()
+        
+        # Если ничего нет, берем extended-text
+        extended = doc.find('extended-text')
+        if extended is not None and extended.text:
+            return extended.text.strip()
+        
+        return ''
     
     def test_connection(self) -> bool:
         """
