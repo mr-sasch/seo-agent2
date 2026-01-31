@@ -2,7 +2,7 @@
   {
     "query": "водомат",
     "region": 157,
-    "parsed_at": "2026-01-31 11:33:12",
+    "parsed_at": "2026-01-31 11:37:58",
     "results": [
       {
         "position": 1,
@@ -41,8 +41,8 @@
       },
       {
         "position": 6,
-        "url": "https://alivewater.by/",
-        "title": "Главная — Живая вода",
+        "url": "https://alivewater.by/dlya-potrebitelej",
+        "title": "Для потребителей — Живая вода",
         "domain": "alivewater.by",
         "headline": ""
       },
@@ -80,7 +80,7 @@
   {
     "query": "вендинговые аппараты купить",
     "region": 157,
-    "parsed_at": "2026-01-31 11:33:15",
+    "parsed_at": "2026-01-31 11:38:02",
     "results": [
       {
         "position": 1,
@@ -98,17 +98,17 @@
       },
       {
         "position": 3,
-        "url": "https://mirespresso.by/catalog/vending/torgovye-avtomaty/",
-        "title": "",
-        "domain": "mirespresso.by",
-        "headline": ""
-      },
-      {
-        "position": 4,
         "url": "https://tlid.by/vending",
         "title": "",
         "domain": "tlid.by",
         "headline": "Компания ТЛИД занимается "
+      },
+      {
+        "position": 4,
+        "url": "https://mirespresso.by/catalog/vending/torgovye-avtomaty/",
+        "title": "",
+        "domain": "mirespresso.by",
+        "headline": ""
       },
       {
         "position": 5,
@@ -119,37 +119,37 @@
       },
       {
         "position": 6,
-        "url": "https://aliexpress.ru/popular/vending-machine-for-sale",
-        "title": "Vending machine for sale - ",
-        "domain": "aliexpress.ru",
-        "headline": "Vending machine for sale - "
-      },
-      {
-        "position": 7,
-        "url": "https://ozon.by/category/mehanicheskie-torgovye-avtomaty-37187/",
-        "title": "",
-        "domain": "ozon.by",
-        "headline": ""
-      },
-      {
-        "position": 8,
         "url": "https://bizneskvartal.by/vendingovye-avtomaty/",
         "title": "",
         "domain": "bizneskvartal.by",
         "headline": ""
       },
       {
+        "position": 7,
+        "url": "https://minsk.deal.by/Torgovye-avtomaty",
+        "title": "",
+        "domain": "minsk.deal.by",
+        "headline": ""
+      },
+      {
+        "position": 8,
+        "url": "https://entero.by/list/131",
+        "title": "",
+        "domain": "entero.by",
+        "headline": ""
+      },
+      {
         "position": 9,
-        "url": "https://russian.alibaba.com/Popular/CN_wall-vending-machine-Trade.html",
-        "title": "настенный ",
-        "domain": "russian.alibaba.com",
+        "url": "https://ozon.by/category/mehanicheskie-torgovye-avtomaty-37187/",
+        "title": "",
+        "domain": "ozon.by",
         "headline": ""
       },
       {
         "position": 10,
-        "url": "https://minsk.deal.by/Torgovye-avtomaty",
-        "title": "",
-        "domain": "minsk.deal.by",
+        "url": "https://russian.alibaba.com/Popular/CN_wall-vending-machine-Trade.html",
+        "title": "настенный ",
+        "domain": "russian.alibaba.com",
         "headline": ""
       }
     ],
@@ -158,7 +158,7 @@
   {
     "query": "водоматы питьевой воды купить",
     "region": 157,
-    "parsed_at": "2026-01-31 11:33:19",
+    "parsed_at": "2026-01-31 11:38:05",
     "results": [
       {
         "position": 1,
@@ -236,7 +236,7 @@
   {
     "query": "источник здоровья минск",
     "region": 157,
-    "parsed_at": "2026-01-31 11:33:22",
+    "parsed_at": "2026-01-31 11:38:09",
     "results": [
       {
         "position": 1,
@@ -261,10 +261,10 @@
       },
       {
         "position": 4,
-        "url": "https://aquamatbiz.com/by",
+        "url": "https://aquamoney.by.kuhnilux.by/",
         "title": "",
-        "domain": "aquamatbiz.com",
-        "headline": "Аппараты «"
+        "domain": "aquamoney.by.kuhnilux.by",
+        "headline": ""
       },
       {
         "position": 5,
@@ -282,10 +282,10 @@
       },
       {
         "position": 7,
-        "url": "https://aquamat.ru/o-proizvoditele/",
-        "title": "О компании «",
-        "domain": "aquamat.ru",
-        "headline": ""
+        "url": "https://aquamatbiz.com/by",
+        "title": "",
+        "domain": "aquamatbiz.com",
+        "headline": "Аппараты «"
       },
       {
         "position": 8,
@@ -296,9 +296,9 @@
       },
       {
         "position": 9,
-        "url": "https://ozon.by/category/voda-pitevaya-i-mineralnaya-9468/istochnik-zdorovya-100372432/",
-        "title": "Вода питьевая и минеральная ",
-        "domain": "ozon.by",
+        "url": "https://aquamat.ru/contacts/",
+        "title": "Контакты - aquamat.ru",
+        "domain": "aquamat.ru",
         "headline": ""
       },
       {
