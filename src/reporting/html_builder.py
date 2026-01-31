@@ -14,7 +14,7 @@ class HTMLBuilder:
     
     def generate_report(self, days_back: int = 2) -> str:
         """
-        Генерирует HTML отчет за последние N дней.
+        Генератор HTML отчетов за последние N дней.
         
         Args:
             days_back: количество дней для отчета
@@ -39,7 +39,7 @@ class HTMLBuilder:
         # Формируем данные для таблицы
         table_data = self._prepare_table_data(db, sessions, queries)
         
-        # Генерируем HTML
+        # Генерация HTML
         html_content = self._build_html(sessions, queries, table_data)
         
         # Сохраняем файл
@@ -114,10 +114,17 @@ class HTMLBuilder:
             date_headers.append(formatted_header)
         
         # Подготавливаем статистику
+        # Вычисляем количество уникальных дней
+        unique_dates = set()
+        for session in sessions:
+            date_only = session['created_at'].split()[0]  # Берем только дату
+            unique_dates.add(date_only)
+        
         stats = {
             'keywords_count': len(queries),
-            'days_count': len(sessions),
-            'domains_in_top10': 0,  # Можно вычислить если есть целевой домен
+            'sessions_count': len(sessions),  # Количество проверок
+            'days_count': len(unique_dates),  # Количество дней
+            'domains_in_top10': 0,
         }
         
         # Генерируем строки таблицы
@@ -198,6 +205,7 @@ class HTMLBuilder:
         html_content = html_template.format(
             report_date=datetime.now().strftime('%d.%m.%Y %H:%M'),
             days_count=stats['days_count'],
+            sessions_count=stats['sessions_count'],
             keywords_count=stats['keywords_count'],
             date_headers="\n                        ".join(
                 [f'<th class="date-header">{date}</th>' for date in date_headers]
@@ -226,6 +234,7 @@ class HTMLBuilder:
                 <div>📅 Дата отчета: {report_date}</div>
                 <div>📊 Период: {days_count} дней</div>
                 <div>🔑 Ключевых слов: {keywords_count}</div>
+                <div>🔄 Проверок: {sessions_count}</div>
             </div>
         </div>
         
@@ -235,8 +244,8 @@ class HTMLBuilder:
                 <div class="stat-label">Ключевых слов</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value">{keywords_count}</div>
-                <div class="stat-label">С данными</div>
+                <div class="stat-value">{sessions_count}</div>
+                <div class="stat-label">Проверок</div>
             </div>
             <div class="stat-item">
                 <div class="stat-value">{days_count}</div>
