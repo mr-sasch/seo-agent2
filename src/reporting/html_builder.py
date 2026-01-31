@@ -107,7 +107,13 @@ class HTMLBuilder:
         """Создает HTML контент на основе вашего шаблона."""
         
         # Подготавливаем даты для заголовков
-        date_headers = [session['created_at'].split()[0] for session in sessions]
+        date_headers = []
+        for session in sessions:
+            # Парсим полную дату-время из базы
+            session_dt = datetime.strptime(session['created_at'], '%Y-%m-%d %H:%M:%S.%f')
+            # Форматируем как "2024-01-31<br>14:30"
+            formatted_header = f"{session_dt.strftime('%Y-%m-%d')}<br>{session_dt.strftime('%H:%M')}"
+            date_headers.append(formatted_header)
         
         # Подготавливаем статистику
         stats = {
@@ -139,7 +145,9 @@ class HTMLBuilder:
                         </td>"""
             
             # Добавляем ячейки с данными для каждой даты
-            for date_key in date_headers:
+            for session, date_header in zip(sessions, date_headers):
+                # Берем оригинальную дату из сессии (без времени) для поиска в table_data
+                date_key = session['created_at'].split()[0]
                 results = table_data[query].get(date_key, [])
                 
                 table_rows += f"""
@@ -209,272 +217,7 @@ class HTMLBuilder:
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SEO Мониторинг конкурентов</title>
-    <style>
-        * {{
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }}
-        
-        body {{
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-        }}
-        
-        .container {{
-            max-width: 1600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }}
-        
-        .header {{
-            background: linear-gradient(135deg, #2c3e50, #4a6491);
-            color: white;
-            padding: 25px 30px;
-            border-bottom: 4px solid #3498db;
-        }}
-        
-        .header h1 {{
-            font-size: 28px;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }}
-        
-        .header .subtitle {{
-            font-size: 16px;
-            opacity: 0.9;
-            margin-bottom: 15px;
-        }}
-        
-        .header .meta {{
-            display: flex;
-            gap: 20px;
-            font-size: 14px;
-            opacity: 0.8;
-        }}
-        
-        .stats {{
-            background: #f8f9fa;
-            padding: 20px 30px;
-            border-bottom: 1px solid #e9ecef;
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 15px;
-        }}
-        
-        .stat-item {{
-            text-align: center;
-            min-width: 120px;
-        }}
-        
-        .stat-value {{
-            font-size: 24px;
-            font-weight: bold;
-            color: #2c3e50;
-        }}
-        
-        .stat-label {{
-            font-size: 13px;
-            color: #6c757d;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }}
-        
-        .table-container {{
-            padding: 20px 30px;
-            overflow-x: auto;
-        }}
-        
-        table {{
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 1000px;
-        }}
-        
-        thead {{
-            background: #f1f3f4;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }}
-        
-        th {{
-            padding: 15px 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #2c3e50;
-            border-bottom: 2px solid #dee2e6;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }}
-        
-        td {{
-            padding: 12px;
-            border-bottom: 1px solid #e9ecef;
-            font-size: 13px;
-            vertical-align: top;
-        }}
-        
-        tbody tr:hover {{
-            background-color: #f8f9fa;
-            transition: background-color 0.2s;
-        }}
-        
-        .keyword-cell {{
-            font-weight: 500;
-            color: #2c3e50;
-            white-space: nowrap;
-            min-width: 180px;
-            position: sticky;
-            left: 0;
-            background: white;
-            border-right: 1px solid #e9ecef;
-        }}
-        
-        .date-header {{
-            white-space: nowrap;
-            min-width: 120px;
-            text-align: center;
-        }}
-        
-        .competitor-list {{
-            max-height: 300px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }}
-        
-        .competitor-item {{
-            margin-bottom: 8px;
-            padding: 6px 8px;
-            background: #f8f9fa;
-            border-radius: 4px;
-            border-left: 3px solid #3498db;
-        }}
-        
-        .competitor-item:hover {{
-            background: #e9ecef;
-        }}
-        
-        .position-badge {{
-            display: inline-block;
-            min-width: 24px;
-            padding: 2px 6px;
-            background: #6c757d;
-            color: white;
-            border-radius: 10px;
-            font-size: 11px;
-            font-weight: bold;
-            text-align: center;
-            margin-right: 8px;
-        }}
-        
-        .position-1 .position-badge {{
-            background: #28a745;
-        }}
-        
-        .position-2 .position-badge {{
-            background: #20c997;
-        }}
-        
-        .position-3 .position-badge {{
-            background: #17a2b8;
-        }}
-        
-        .competitor-url {{
-            display: block;
-            color: #0066cc;
-            text-decoration: none;
-            font-size: 12px;
-            margin-top: 2px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }}
-        
-        .competitor-url:hover {{
-            text-decoration: underline;
-            color: #0056b3;
-        }}
-        
-        .competitor-title {{
-            display: block;
-            color: #495057;
-            font-size: 12px;
-            margin-top: 2px;
-            font-style: italic;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            max-height: 32px;
-        }}
-        
-        .empty-cell {{
-            text-align: center;
-            color: #6c757d;
-            font-style: italic;
-            padding: 20px;
-        }}
-        
-        .footer {{
-            padding: 20px 30px;
-            text-align: center;
-            color: #6c757d;
-            font-size: 13px;
-            border-top: 1px solid #e9ecef;
-            background: #f8f9fa;
-        }}
-        
-        .legend {{
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }}
-        
-        .legend-item {{
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 12px;
-        }}
-        
-        .legend-color {{
-            width: 15px;
-            height: 15px;
-            border-radius: 3px;
-        }}
-        
-        @media (max-width: 768px) {{
-            .container {{
-                border-radius: 0;
-            }}
-            
-            .header, .stats, .table-container, .footer {{
-                padding: 15px;
-            }}
-            
-            .stats {{
-                flex-direction: column;
-                align-items: flex-start;
-            }}
-            
-            .stat-item {{
-                min-width: auto;
-                text-align: left;
-            }}
-        }}
-    </style>
+    <link rel="stylesheet" href="../reports/style.css">
 </head>
 <body>
     <div class="container">

@@ -2,7 +2,7 @@
   {
     "query": "водомат",
     "region": 157,
-    "parsed_at": "2026-01-31 14:48:36",
+    "parsed_at": "2026-01-31 15:20:40",
     "results": [
       {
         "position": 1,
@@ -13,10 +13,10 @@
       },
       {
         "position": 2,
-        "url": "https://2gis.by/minsk/search/%D0%92%D0%BE%D0%B4%D0%BE%D0%BC%D0%B0%D1%82%D1%8B",
-        "title": "",
+        "url": "https://2gis.by/minsk/search/%D0%90%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D1%8B%20%D0%BF%D0%B8%D1%82%D1%8C%D0%B5%D0%B2%D0%BE%D0%B9%20%D0%B2%D0%BE%D0%B4%D1%8B%20%D0%B2%D0%BE%D0%B4%D0%BE%D0%BC%D0%B0%D1%82%D1%8B",
+        "title": "Автоматы питьевой воды ",
         "domain": "2gis.by",
-        "description": ""
+        "description": "Автоматы питьевой воды"
       },
       {
         "position": 3,
@@ -27,45 +27,45 @@
       },
       {
         "position": 4,
-        "url": "https://drinkwater.pro/blog/tpost/u38jeyftl1-kak-vibrat-avtomat-dlya-prodazhi-vodi-ch",
-        "title": "Как выбрать автомат для продажи воды, чтобы потом не жалеть",
-        "domain": "drinkwater.pro",
-        "description": ""
-      },
-      {
-        "position": 5,
         "url": "https://aquamoney.by/catalog/",
         "title": "Купить ",
         "domain": "aquamoney.by",
         "description": "Принцип работы таких"
       },
       {
+        "position": 5,
+        "url": "https://drinkwater.pro/blog/tpost/74b2gegfi1-kak-rabotayut-avtomati-po-ochistke-vodi",
+        "title": "Как работают автоматы по очистке воды",
+        "domain": "drinkwater.pro",
+        "description": "Для работы"
+      },
+      {
         "position": 6,
-        "url": "https://www.youtube.com/watch?v=XtY_DPF5SUc",
-        "title": "Эко-бизнес на воде: ",
-        "domain": "www.youtube.com",
-        "description": "Один аппарат по розливу воды спасает планету от 10000 пластиковых бутылок.Как устроен"
+        "url": "https://alivewater.by/",
+        "title": "Главная — Живая вода",
+        "domain": "alivewater.by",
+        "description": "Узнал про"
       },
       {
         "position": 7,
+        "url": "https://www.ntv.ru/novosti/2811225/",
+        "title": "Безопасно ли пить воду из уличных автоматов // Новости НТВ",
+        "domain": "www.ntv.ru",
+        "description": "Ведь"
+      },
+      {
+        "position": 8,
         "url": "https://vk.com/wall-27198459_1408",
         "title": "Вода у дома. Как устроен ",
         "domain": "vk.com",
         "description": ""
       },
       {
-        "position": 8,
-        "url": "https://www.water8.ru/blog/vodomat",
-        "title": "Откуда вода в автоматах по продаже воды?",
-        "domain": "www.water8.ru",
-        "description": "Жители крупных городов стали замечать появление"
-      },
-      {
         "position": 9,
-        "url": "https://alivewater.by/katalog",
-        "title": "Вендинговые аппараты по продаже питьевой воды на улице...",
-        "domain": "alivewater.by",
-        "description": "Сертификаты. 2021-02-146549. «Живая вода» продолжает усовершенствование своих"
+        "url": "https://www.youtube.com/watch?v=XtY_DPF5SUc",
+        "title": "Эко-бизнес на воде: ",
+        "domain": "www.youtube.com",
+        "description": "Один аппарат по розливу воды спасает планету от 10000 пластиковых бутылок.Как устроен"
       },
       {
         "position": 10,
@@ -80,7 +80,7 @@
   {
     "query": "вендинговые аппараты купить",
     "region": 157,
-    "parsed_at": "2026-01-31 14:48:40",
+    "parsed_at": "2026-01-31 15:20:43",
     "results": [
       {
         "position": 1,
@@ -140,17 +140,17 @@
       },
       {
         "position": 9,
-        "url": "https://russian.alibaba.com/Popular/CN_wall-vending-machine-Trade.html",
-        "title": "настенный ",
-        "domain": "russian.alibaba.com",
-        "description": "Небольшой"
-      },
-      {
-        "position": 10,
         "url": "https://minsk.deal.by/Torgovye-avtomaty",
         "title": "",
         "domain": "minsk.deal.by",
         "description": ""
+      },
+      {
+        "position": 10,
+        "url": "https://russian.alibaba.com/Popular/CN_wall-vending-machine-Trade.html",
+        "title": "настенный ",
+        "domain": "russian.alibaba.com",
+        "description": "Миниатюрные настенные"
       }
     ],
     "results_count": 10
@@ -158,7 +158,7 @@
   {
     "query": "водоматы питьевой воды купить",
     "region": 157,
-    "parsed_at": "2026-01-31 14:48:44",
+    "parsed_at": "2026-01-31 15:20:47",
     "results": [
       {
         "position": 1,
@@ -218,17 +218,17 @@
       },
       {
         "position": 9,
-        "url": "https://www.watervend.ru/katalog/",
-        "title": "Каталог автоматов по ",
-        "domain": "www.watervend.ru",
-        "description": "Каждый из них решает проблему по-своему – кто-то"
-      },
-      {
-        "position": 10,
         "url": "https://aquamat.ru/catalog/",
         "title": "Автоматы по ",
         "domain": "aquamat.ru",
         "description": "Каталог производимых аппаратов по"
+      },
+      {
+        "position": 10,
+        "url": "https://www.watervend.ru/katalog/",
+        "title": "Каталог автоматов по ",
+        "domain": "www.watervend.ru",
+        "description": "Каждый из них решает проблему по-своему – кто-то"
       }
     ],
     "results_count": 10
@@ -236,7 +236,7 @@
   {
     "query": "источник здоровья минск",
     "region": 157,
-    "parsed_at": "2026-01-31 14:48:47",
+    "parsed_at": "2026-01-31 15:20:50",
     "results": [
       {
         "position": 1,
