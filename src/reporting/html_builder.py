@@ -187,11 +187,7 @@ class HTMLBuilder:
                                     <a href="{url}" target="_blank" class="competitor-url" title="{url}">
                                         {short_url}
                                     </a>"""
-                        
-                        if title:
-                            table_rows += f"""
-                                    <span class="competitor-title" title="{title}">{title}</span>"""
-                        
+                                           
                         table_rows += """
                                 </div>"""
                 else:
