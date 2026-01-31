@@ -49,11 +49,19 @@ def main():
     # Загружаем запросы
     queries = load_queries()
     
+    def load_region():
+        """Читает регион из файла."""
+        from pathlib import Path
+        region_file = Path(__file__).parent.parent / 'config' / 'region.txt'
+        with open(region_file, 'r', encoding='utf-8') as f:
+            return int(f.read().strip())
+    
     print(f"\n2. Парсим {len(queries)} запросов...")
-    print("   (регион: Москва, результаты: топ-10)")
+    region = load_region()
+    print(f"   (регион: {region}, результаты: топ-10)")
     
     try:
-        results = parser.parse_queries(queries, region=213, max_results=10)
+        results = parser.parse_queries(queries, region=region, max_results=10)
         
         print(f"\n3. Результаты парсинга:")
         print("=" * 50)
